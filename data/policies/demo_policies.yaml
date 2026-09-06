@@ -1,0 +1,155 @@
+# FINPILOT — Demo accounting policy catalog (data/policies)
+# Deterministic, configurable policy rules. The policy engine evaluates these
+# against every proposed action. Amount thresholds are INR (synthetic demo).
+
+policies:
+  - code: JE_APPROVAL_THRESHOLD
+    name: Journal Entry Controller Approval
+    description: Journal entries above 1,000,000 INR require Controller (or CFO) approval before posting.
+    category: APPROVAL
+    parameters:
+      currency: INR
+      threshold: 1000000
+      required_role: CONTROLLER
+
+  - code: AUTO_RESOLVE_RULE
+    name: Controlled Autonomy — Auto Resolve
+    description: Auto-resolve an exception only when confidence >= min_confidence, risk LOW, all policies pass, and amount below materiality threshold.
+    category: AUTONOMY
+    parameters:
+      min_confidence: 97
+      max_auto_resolve_amount: 250000
+
+  - code: REVIEW_RULE
+    name: Controlled Autonomy — Human Review
+    description: Confidence 80-97 or medium risk requires human review; reviewer is Controller when above 100000 INR else Accountant.
+    category: AUTONOMY
+    parameters:
+      review_confidence_floor: 80
+      review_amount_role_threshold: 100000
+
+  - code: ESCALATION_RULE
+    name: Controlled Autonomy — Escalation
+    description: High risk, suspicious activity, policy failure, or material amounts must escalate; never auto-post.
+    category: AUTONOMY
+    parameters:
+      material_threshold: 1000000
+      highly_material_threshold: 5000000
+
+  - code: JOURNAL_BALANCED
+    name: Journal entries must balance
+    description: Total debit must equal total credit before any posting.
+    category: JOURNAL
+    parameters: {}
+
+  - code: JOURNAL_IDEMPOTENCY
+    name: Journal idempotency
+    description: Every journal entry requires a unique idempotency key; repeated execution must never duplicate a posting.
+    category: JOURNAL
+    parameters: {}
+
+  - code: DUPLICATE_INVOICE_BLOCK
+    name: Duplicate invoice protection
+    description: Duplicate invoices are high risk and must escalate to human review; auto-posting is prohibited.
+    category: PAYMENT
+    parameters: {}
+
+  - code: SUSPICIOUS_ACTIVITY_REVIEW
+    name: Suspicious transaction review
+    description: Transactions flagged suspicious (round amounts, unusual counterparties, off-hours) always require human review.
+    category: COMPLIANCE
+    parameters: {}
+
+  - code: EVIDENCE_REQUIRED
+    name: Evidence-backed decisions
+    description: Any autonomous resolution must reference at least min_evidence evidence items from the financial evidence graph.
+    category: AUDIT
+    parameters:
+      min_evidence: 3
+
+  - code: BANK_FEE_TOLERANCE
+    name: Bank fee tolerance
+    description: Bank fees up to tolerance are auto-classifiable as processing fees when history supports the rate.
+    category: RECONCILIATION
+    parameters:
+      tolerance: 25000
+      max_fee_rate_percent: 5.0
+
+  - code: FX_VARIANCE_TOLERANCE
+    name: FX variance tolerance
+    description: FX variances within tolerance of invoice amount may be auto-resolved when below materiality.
+    category: RECONCILIATION
+    parameters:
+      tolerance_percent: 2.0
+
+  - code: THREE_WAY_MATCH
+    name: Three-way match
+    description: Invoices above the threshold must match to a purchase order before payment posting.
+    category: PAYMENT
+    parameters:
+      threshold: 50000
+
+  - code: TDS_COMPLIANCE
+    name: TDS booking compliance
+    description: Payments subject to TDS must record TDS Payable at statutory rates.
+    category: COMPLIANCE
+    parameters:
+      default_rate_percent: 10.0
+
+  - code: GST_INPUT_CREDIT
+    name: GST input tax credit control
+    description: GST input credit claims must reference a valid vendor invoice with GSTIN.
+    category: COMPLIANCE
+    parameters: {}
+
+  - code: CUT_OFF_ACCRUALS
+    name: Cut-off accruals
+    description: Expenses incurred but not invoiced at period end must be accrued before close completion.
+    category: CLOSE
+    parameters: {}
+
+  - code: VENDOR_BANK_CHANGE_REVIEW
+    name: Vendor bank-detail change review
+    description: Any vendor bank-detail change requires Controller review before payment (fraud control).
+    category: PAYMENT
+    parameters: {}
+
+  - code: SEGREGATION_OF_DUTIES
+    name: Segregation of duties
+    description: The journal preparer (agent or user) cannot be the approver; Controller or CFO must approve.
+    category: APPROVAL
+    parameters: {}
+
+  - code: ROUND_AMOUNT_FLAG
+    name: Round-amount flag
+    description: Bank transactions at or above the round-amount threshold are flagged for human review.
+    category: COMPLIANCE
+    parameters:
+      threshold: 500000
+
+  - code: POST_CLOSE_ADJUSTMENT
+    name: Post-close adjustment control
+    description: Journal entries recorded after close completion require CFO approval.
+    category: CLOSE
+    parameters: {}
+
+  - code: MATERIALITY_BASIS
+    name: Materiality basis
+    description: Demo materiality basis — fixed threshold plus percent-of-revenue component used by the materiality engine.
+    category: AUTONOMY
+    parameters:
+      fixed_inr: 1000000
+      revenue_percent: 0.5
+
+  - code: BANK_RECON_COMPLETENESS
+    name: Bank reconciliation completeness
+    description: Every bank transaction must be matched or exceptioned before the close can complete.
+    category: CLOSE
+    parameters: {}
+
+  - code: EVIDENCE_RETENTION
+    name: Evidence retention
+    description: Every decision and its evidence graph is retained for audit for the retention period.
+    category: AUDIT
+    parameters:
+      retention_years: 7

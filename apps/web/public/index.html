@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinPilot — Autonomous Month-End Close</title>
+<link rel="stylesheet" href="/styles.css">
+<link rel="preconnect" href="https://rsms.me/"><link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%235b8def'/><text x='50' y='68' font-size='52' font-family='Arial' font-weight='bold' fill='white' text-anchor='middle'>F</text></svg>">
+</head>
+<body>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand">
+      <div class="brand-mark">FP</div>
+      <div>
+        <div class="brand-name">FinPilot</div>
+        <div class="brand-sub">Autonomous Close</div>
+      </div>
+    </div>
+    <nav id="nav">
+      <div class="nav-group">Close</div>
+      <a data-page="overview" class="active">Overview</a>
+      <a data-page="close">Close Progress</a>
+      <a data-page="exceptions">Exceptions</a>
+      <div class="nav-group">Financials</div>
+      <a data-page="reconciliation">Reconciliation</a>
+      <a data-page="journals">Journal Entries</a>
+      <a data-page="forecast">Forecast</a>
+      <div class="nav-group">Trust</div>
+      <a data-page="evidence">Evidence Graph</a>
+      <a data-page="audit">Audit Package</a>
+      <a data-page="agent">Agent Activity</a>
+      <a data-page="policies">Policies</a>
+      <div class="nav-group">System</div>
+      <a data-page="settings">Settings</a>
+      <a data-page="ao">Build With AO</a>
+    </nav>
+    <div class="sidebar-footer">
+      <div id="synthetic-badge" class="synthetic-badge" title="All data in this environment is synthetic">SYNTHETIC DATA · SEED 2026</div>
+      <label class="role-label" for="role-select">Acting as</label>
+      <select id="role-select"></select>
+      <div class="actions">
+        <button id="btn-start" class="btn primary">▶ Start September Close</button>
+        <button id="btn-reset" class="btn ghost">↺ Reset Demo</button>
+      </div>
+    </div>
+  </aside>
+
+  <main id="main">
+    <header id="topbar">
+      <div>
+        <h1 id="page-title">Overview</h1>
+        <div class="page-sub" id="page-sub">September 2026 close — synthetic demo data</div>
+      </div>
+      <div class="tb-right">
+        <div class="mini-progress" title="Close progress"><i id="mini-progress-fill" style="width:0%"></i></div>
+        <div id="run-status" class="run-status"></div>
+      </div>
+    </header>
+    <div id="page"></div>
+  </main>
+</div>
+
+<div id="drawer" class="drawer hidden">
+  <div class="drawer-backdrop"></div>
+  <div class="drawer-panel">
+    <button class="drawer-close" id="drawer-close" aria-label="Close">×</button>
+    <div id="drawer-content"></div>
+  </div>
+</div>
+
+<div id="copilot-fab" title="Ask the CFO Copilot">✦</div>
+<div id="copilot" class="copilot hidden">
+  <div class="copilot-head">
+    <strong>CFO Copilot</strong>
+    <span class="copilot-note">grounded in close data · no hidden reasoning</span>
+    <button id="copilot-close" aria-label="Close">×</button>
+  </div>
+  <div id="copilot-log"></div>
+  <form id="copilot-form">
+    <input id="copilot-input" placeholder='e.g. "Why did cash decrease this month?"' autocomplete="off">
+    <button class="btn primary" type="submit">Ask</button>
+  </form>
+</div>
+
+<div id="toast" role="status"></div>
+<script src="/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+{
+  "name": "finpilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "FINPILOT — Autonomous Month-End Close Agent (Track 2: Autonomous Office of the CFO). Close the books. Not just chat about them.",
+  "engines": {
+    "node": ">=22.5.0"
+  },
+  "scripts": {
+    "db:migrate": "node packages/database/src/migrate.ts",
+    "db:seed": "node packages/database/src/seed.ts",
+    "seed": "node packages/database/src/migrate.ts && node packages/database/src/seed.ts",
+    "build": "tsc --noEmit",
+    "start": "node apps/api/src/server/main.ts",
+    "dev": "node --watch apps/api/src/server/main.ts",
+    "test": "node tests/run_all.ts",
+    "test:unit": "node tests/unit/engines.test.ts",
+    "test:e2e": "node tests/e2e/close_workflow.test.ts",
+    "verify": "npm run build && npm run test"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.1",
+    "typescript": "5.7"
+  }
+}
