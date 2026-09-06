@@ -8,8 +8,8 @@ services:
     image: postgres:17
     profile: "pg"
     environment:
-      POSTGRES_USER: finpilot
-      POSTGRES_PASSWORD: finpilot_dev_only
+      POSTGRES_USER: 
+      POSTGRES_PASSWORD: 
       POSTGRES_DB: finpilot
     ports:
       - "5432:5432"
