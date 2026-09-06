@@ -1,0 +1,21 @@
+# Render Blueprint — one-click deploy for FinPilot.
+# The free tier uses an ephemeral disk, which is safe here because the app
+# auto-seeds the deterministic demo dataset on first boot and RESET DEMO
+# restores the exact initial state at any time.
+services:
+  - type: web
+    name: finpilot
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: FINPILOT_DEMO_SEED
+        value: "2026"
+      - key: FINPILOT_DB_PATH
+        value: /app/data/finpilot.db
+    # To persist the database across deploys, attach a disk and point
+    # FINPILOT_DB_PATH at it (requires a paid plan):
+    # disk:
+    #   name: finpilot-data
+    #   mountPath: /app/data
+    #   sizeGB: 1

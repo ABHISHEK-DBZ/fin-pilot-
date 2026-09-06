@@ -17,11 +17,22 @@ import { answerCfoQuestion } from '../../../../packages/agents/src/cfoCopilot.ts
 import { evidenceForException, neighborhood } from '../../../../packages/evidence-graph/src/evidenceGraph.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = parseInt(process.env.FINPILOT_PORT || '4310', 10);
+const PORT = parseInt(process.env.PORT || process.env.FINPILOT_PORT || '4310', 10);
 const PUBLIC_DIR = path.resolve(__dirname, '..', '..', '..', 'web', 'public');
 
 const db = getDb();
 runSchema(db);
+
+// Auto-seed on first boot (fresh/ephemeral deployment disks): if the database has no
+// organization yet, load the deterministic demo dataset (FINPILOT_DEMO_SEED, default 2026).
+{
+  const orgs = (db.prepare(`SELECT COUNT(*) c FROM organizations`).get() as { c: number }).c;
+  if (orgs === 0) {
+    const seed = seedDemoData(db, parseInt(process.env.FINPILOT_DEMO_SEED || '2026', 10));
+    console.log(`[finpilot] fresh database — seeded deterministic demo data (seed ${process.env.FINPILOT_DEMO_SEED || '2026'})`);
+    console.log(`[finpilot]   bank=${seed.bank_txns} ledger=${seed.ledger_txns} invoices=${seed.invoices}`);
+  }
+}
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -459,3 +470,6 @@ server.listen(PORT, () => {
   console.log(`[finpilot] API + UI listening on http://localhost:${PORT}`);
   console.log('[finpilot] SYNTHETIC DEMO DATA — NOT REAL FINANCIAL INFORMATION');
 });
+
+process.on('SIGTERM', () => { server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 3000); });
+process.on('SIGINT', () => { server.close(() => process.exit(0)); setTimeout(() => process.exit(0), 3000); });
